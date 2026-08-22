@@ -127,11 +127,17 @@ L'application consomme la librairie externe **Package-Mapping** publiée sur Jit
   - `dto/` : Objets de transfert de données (`LoginRequestDto`, `AuthResponseDto`, `UpdateProfileDto`).
 
 - **👥 `fidele` (Module Gestion des Fidèles)**
-  - `FideleController` : Endpoints REST de recherche, création, modification et gestion des engagements des fidèles.
-  - `FideleService` : Logique métier d'inscription, de mise à jour des fidèles et d'affectation d'engagements.
+  - `FideleController` : Endpoints REST de recherche, création, modification et gestion des fidèles.
+  - `FideleService` : Logique métier d'inscription, de mise à jour des fidèles et de conversion avec validation stricte par Enums.
   - `FideleRepository` : Interface de persistance JPA supportant `JpaSpecificationExecutor`.
   - `FideleSpecification` : Construction de critères de filtrage dynamiques multi-paramètres.
-  - `dto/` : Objets de données (`FideleDto`, `EngagementDto`).
+  - `dto/` : Objets de données (`FideleDto`, `EngagementDto`) typés avec les Enums métier (`Sexe`, `Statut`, `FrequenceDime`).
+
+- **📄 `document` (Module Génération de Documents PDF)**
+  - `DocumentController` : Endpoints REST pour le téléchargement et l'exportation des PDF (`/api/documents/fidele/{id}/pdf` et `/api/documents/lettre-recommandation/pdf`).
+  - `FidelePdfExporter` : Service de génération du PDF de la **Fiche d'Inscription Individuelle** (rendu Thymeleaf + FlyingSaucer).
+  - `LetterExporter` : Service de génération du PDF de la **Lettre de Recommandation Sortante** pour les fidèles en transfert/voyage.
+  - `dto/` : Objets de transfert de demande (`LettreRecommandationRequestDto`).
 
 - **🛠️ `shared` (Configurations & Sécurité Transverses)**
   - `config/SecurityConfig` : Chaîne de sécurité Spring Security (Filtre JWT, règles d'accès stateless, désactivation CSRF).
@@ -139,6 +145,21 @@ L'application consomme la librairie externe **Package-Mapping** publiée sur Jit
   - `config/CorsConfig` : Autorisations multi-origines pour les applications clientes (React/Mobile).
   - `security/` : Gestionnaire de jetons JWT (`JwtUtil`) et filtre d'interception des requêtes HTTP (`JwtFilter`).
   - `exception/` : Gestionnaire d'exceptions global (`GlobalExceptionHandler`) pour un formatage JSON standardisé des erreurs.
+
+---
+
+## 🧪 Tests d'Intégration & Génération PDF Locale
+
+Le projet inclut une classe de test JUnit permettant de tester la génération et le rendu visuel des documents PDF sans dépendre de la base de données PostgreSQL :
+
+```bash
+# Exécution du test JUnit pour générer les fichiers PDF de démonstration
+./mvnw test -Dtest=PdfGenerationTest
+```
+
+Une fois le test exécuté, deux fichiers PDF préremplis avec mise en page A4 officielle sont générés à la racine du projet :
+- `test_fiche_inscription.pdf`
+- `test_lettre_recommandation.pdf`
 
 ---
 

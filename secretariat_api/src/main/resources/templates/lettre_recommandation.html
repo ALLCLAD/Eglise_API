@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lettre de Recommandation</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 8mm 12mm 8mm 12mm;
+        }
+        body {
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.5;
+            color: #000;
+        }
+        .text-center { text-align: center; }
+        .bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+
+        /* Tableau d'en-tête */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+        .logo-img {
+            width: 55px;
+            height: auto;
+        }
+        .header-title { font-size: 13.5pt; font-weight: bold; }
+        .header-sub { font-size: 9.5pt; font-weight: bold; }
+        .header-contact { font-size: 8.5pt; font-weight: bold; }
+
+        /* Double barre officielle */
+        .double-line {
+            border-top: 1px solid #000;
+            border-bottom: 3.5px solid #000;
+            height: 2px;
+            margin-top: 3px;
+            margin-bottom: 15px;
+        }
+
+        .doc-title {
+            font-size: 12.5pt;
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .box {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 10px;
+            font-size: 8pt;
+            font-weight: bold;
+            margin-left: 2px;
+            margin-right: 12px;
+        }
+
+        .section-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: center;
+            margin-top: 14px;
+            margin-bottom: 8px;
+        }
+
+        .line { margin-bottom: 8px; }
+        .dots {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-width: 100px;
+            padding-left: 3px;
+        }
+
+        .verset {
+            font-style: italic;
+            text-align: center;
+            margin-top: 22px;
+            margin-bottom: 22px;
+        }
+
+        .content-body {
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 1.5;
+        }
+
+        .signature-block {
+            margin-top: 20px;
+            float: right;
+            text-align: left;
+            width: 250px;
+        }
+        .signature-space {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- En-tête avec Logos -->
+<table class="header-table">
+    <tr>
+        <td style="width: 12%; text-align: left;">
+            <img src="images/logo_ad.png" th:src="@{images/logo_ad.png}" class="logo-img" alt="Logo AD"/>
+        </td>
+        <td style="width: 76%; text-align: center;">
+            <div class="header-title">EGLISE DES ASSEMBLEES DE DIEU DU TOGO</div>
+            <div class="header-sub">TEMPLE DIEU NE CHANGE PAS</div>
+            <div class="header-contact">04 BP: 27 Lomé 04-Togo Tél: 0028 90 14 68 87</div>
+        </td>
+        <td style="width: 12%; text-align: right;">
+            <img src="images/logo_ad.png" th:src="@{images/logo_ad.png}" class="logo-img" alt="Logo AD"/>
+        </td>
+    </tr>
+</table>
+
+<!-- Double Barre Officielle (Fine en haut / Épaisse en bas) -->
+<div class="double-line"></div>
+
+<!-- Titre -->
+<div class="doc-title">LETTRE DE RECOMMANDATION</div>
+
+<!-- Objet -->
+<div class="content-body">
+<div style="margin-bottom: 15px;">
+    <span class="bold">Objet :</span>
+    Transfert <span class="box" th:text="${request.motif != null and #strings.containsIgnoreCase(request.motif, 'transfert') ? 'X' : ''}"></span>
+    Voyage <span class="box" th:text="${request.motif != null and #strings.containsIgnoreCase(request.motif, 'voyage') ? 'X' : ''}"></span>
+    Emploi <span class="box" th:text="${request.motif != null and #strings.containsIgnoreCase(request.motif, 'emploi') ? 'X' : ''}"></span>
+</div>
+
+<!-- Corps -->
+<div class="line">
+    Je soussigné : <span class="dots" style="width: 150px;">Pasteur AD</span> Pasteur de l'Église des Assemblées de Dieu Temple : « DIEU NE CHANGE PAS », atteste
+    que le ou la nommé(e) : <span class="bold dots" style="width: 250px;" th:text="${fidele.nom + ' ' + (fidele.prenoms != null ? fidele.prenoms : '')}"></span> est membre
+    actif de notre assemblée depuis : <span class="dots" style="width: 100px;" th:text="${fidele.statutFidele != null and fidele.statutFidele.estMembreActifDepuis != null ?
+  #temporals.format(fidele.statutFidele.estMembreActifDepuis, 'dd/MM/yyyy') : ''}"></span>.
+</div>
+
+<div class="line">
+    <span class="bold">Date et lieu de naissance :</span> <span class="dots" style="width: 65%;" th:text="${(fidele.dateNaissance != null ? #temporals.
+  format(fidele.dateNaissance, 'dd/MM/yyyy') : '') + ' à ' + (fidele.lieuNaissance != null ? fidele.lieuNaissance : '')}"></span>
+</div>
+<div class="line">
+    <span class="bold">Baptisé d'eau le :</span> <span class="dots" style="width: 75%;" th:text="${fidele.parcoursSpirituel != null and fidele.parcoursSpirituel.
+  dateBaptemeEau != null ? #temporals.format(fidele.parcoursSpirituel.dateBaptemeEau, 'dd/MM/yyyy') : ''}"></span>
+</div>
+<div class="line">
+    <span class="bold">Baptisé du Saint-Esprit le :</span> <span class="dots" style="width: 65%;" th:text="${fidele.parcoursSpirituel != null and fidele.
+  parcoursSpirituel.dateBaptemeSaintEsprit != null ? #temporals.format(fidele.parcoursSpirituel.dateBaptemeSaintEsprit, 'dd/MM/yyyy') : ''}"></span>
+</div>
+<div class="line">
+    <span class="bold">Profession :</span> <span class="dots" style="width: 80%;" th:text="${fidele.profession}"></span>
+</div>
+
+<div class="line">
+    <span class="bold">Situation matrimoniale :</span>
+    Célibataire <span class="box" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.statutActuel?.name() == 'CELIBATAIRE' ? 'X' :
+  ''}"></span>
+    Fiancé(e) <span class="box" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.statutActuel?.name() == 'FIANCE' ? 'X' :
+  ''}"></span>
+    Marié(e) <span class="box" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.statutActuel?.name() == 'MARIE' ? 'X' :
+  ''}"></span>
+    Divorcé(e) <span class="box" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.statutActuel?.name() == 'DIVORCE' ? 'X' :
+  ''}"></span>
+    Nombre d'enfant : <span class="dots" style="min-width:30px;" th:text="${fidele.situationMatrimoniale != null ? ( (fidele.situationMatrimoniale.nombreGarçons
+  != null ? fidele.situationMatrimoniale.nombreGarçons : 0) + (fidele.situationMatrimoniale.nombreFilles != null ? fidele.situationMatrimoniale.nombreFilles : 0) ) :
+  ''}"></span>
+</div>
+
+<div class="line">
+    <span class="bold">Sexe :</span>
+    Masculin <span class="box" th:text="${fidele.sexe != null and fidele.sexe.name() == 'MASCULIN' ? 'X' : ''}"></span>
+    Féminin <span class="box" th:text="${fidele.sexe != null and fidele.sexe.name() == 'FEMININ' ? 'X' : ''}"></span>
+</div>
+
+<div class="line">
+    <span class="bold">Sous-discipline :</span>
+    oui <span class="box" th:text="${fidele.statutFidele != null and fidele.statutFidele.estSousDiscipline ? 'X' : ''}"></span>
+    non <span class="box" th:text="${fidele.statutFidele == null or not fidele.statutFidele.estSousDiscipline ? 'X' : ''}"></span>
+    &nbsp;&nbsp;
+    <span class="bold">Date de levée de la discipline :</span> <span class="dots" style="width: 30%;" th:text="${fidele.statutFidele != null and fidele.
+  statutFidele.dateLeveeDiscipline != null ? #temporals.format(fidele.statutFidele.dateLeveeDiscipline, 'dd/MM/yyyy') : ''}"></span>
+</div>
+
+<!-- Activité église locale -->
+<div class="section-title">ACTIVITÉ AU SEIN DE L'ÉGLISE LOCALE</div>
+<div class="line text-center">
+    Diacre/Diaconesse <span class="box"></span>
+    Conseil des hommes <span class="box"></span>
+    Ministère des femmes <span class="box"></span>
+</div>
+<div class="line text-center">
+    Jeunesse <span class="box"></span>
+    Interprète <span class="box"></span>
+    Groupe musical <span class="box"></span>
+    Choriste <span class="box"></span>
+</div>
+<div class="line text-center">
+    Évangéliste <span class="box"></span>
+    Moniteur <span class="box"></span>
+    Accueil <span class="box"></span>
+</div>
+
+<!-- Autre renseignement -->
+<div class="section-title">AUTRE RENSEIGNEMENT</div>
+<div class="line">
+    <span class="bold">Motif / Église de destination :</span> <span class="dots" style="width: 70%;" th:text="${request.motif + ' - Église : ' + request.
+  egliseDestination}"></span>
+</div>
+<div class="line" style="margin-top: 10px;">
+    En foi de quoi, nous lui délivrons la présente lettre de recommandation pour servir et valoir ce que de droit.
+</div>
+
+<!-- Verset -->
+<div class="verset">
+    « Recevez-le en notre seigneur d'une manière digne des saints et que vous l'assistiez dans les choses dont il aurait besoin...... » Romain 16 :1-2.
+</div>
+</div>
+
+<!-- Signature -->
+<div class="signature-block">
+    <div class="bold">
+        Fait à Lomé, le <span th:text="${dateEmission != null ? #temporals.format(dateEmission, 'dd/MM/yyyy') : (request != null and request.dateDepart != null ? #temporals.format(request.dateDepart, 'dd/MM/yyyy') : (today != null ? #temporals.format(today, 'dd/MM/yyyy') : '...........20...'))}">...........20...</span>
+    </div>
+    <div class="bold" style="margin-top: 15px;">Le Pasteur</div>
+    <div class="signature-space"></div>
+</div>
+<div style="clear: both;"></div>
+
+</body>
+</html>

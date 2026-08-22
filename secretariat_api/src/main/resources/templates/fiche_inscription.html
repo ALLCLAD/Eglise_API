@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Fiche d'Inscription Individuelle</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 8mm 11mm 8mm 11mm;
+        }
+        body {
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 9.8pt;
+            line-height: 1.55;
+            color: #000;
+        }
+        .text-center { text-align: center; }
+        .bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+
+        /* Tableau d'en-tête */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2px;
+        }
+        .header-table td {
+            vertical-align: middle;
+            border: none;
+            padding: 0;
+        }
+        .logo-img {
+            width: 58px;
+            height: auto;
+        }
+        .header-title { font-size: 13.5pt; font-weight: bold; }
+        .header-sub { font-size: 9.5pt; font-weight: bold; }
+        .header-contact { font-size: 8.5pt; font-weight: bold; }
+
+        /* Double Barre Officielle */
+        .double-line {
+            border-top: 1px solid #000;
+            border-bottom: 3px solid #000;
+            height: 2px;
+            margin-top: 2px;
+            margin-bottom: 10px;
+        }
+
+        .doc-title {
+            font-size: 11pt;
+            font-weight: bold;
+            text-decoration: underline;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .line {
+            margin-bottom: 6px;
+            width: 100%;
+            clear: both;
+        }
+        .dots {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            padding-left: 3px;
+        }
+
+        .content-body {
+            text-align: justify;
+            text-justify: inter-word;
+            line-height: 1.55;
+        }
+
+        .footer-note {
+            font-size: 9pt;
+            font-weight: bold;
+            margin-top: 14px;
+        }
+        .signature-block {
+            margin-top: 15px;
+            float: right;
+            text-align: left;
+            width: 230px;
+        }
+        .signature-space {
+            height: 45px;
+        }
+    </style>
+</head>
+<body>
+<table class="header-table">
+    <tr>
+        <td style="width: 12%; text-align: left;">
+            <img src="images/logo_ad.png" th:src="@{images/logo_ad.png}" class="logo-img" alt="Logo AD"/>
+        </td>
+        <td style="width: 76%; text-align: center;">
+            <div class="header-title">EGLISE DES ASSEMBLEES DE DIEU DU TOGO</div>
+            <div class="header-sub">TEMPLE DIEU NE CHANGE PAS</div>
+            <div class="header-contact">04 BP: 27 Lomé 04-Togo Tél: 0028 90 14 68 87</div>
+        </td>
+        <td style="width: 12%; text-align: right;">
+            <img src="images/logo_ad.png" th:src="@{images/logo_ad.png}" class="logo-img" alt="Logo AD"/>
+        </td>
+    </tr>
+</table>
+
+<!-- Double Barre Officielle (Fine en haut / Épaisse en bas) -->
+<div class="double-line"></div>
+
+<!-- Titre -->
+<div class="doc-title">RENSEIGNEMENTS PRELIMINAIRES SUR LES FIDELES</div>
+
+<!-- Contenu Fiche exact comme img.png -->
+<div class="content-body">
+<div class="line">
+    <span>Nom et prénoms :</span>
+    <span class="dots" style="width: 80%;" th:text="${fidele.nom + ' ' + (fidele.prenoms != null ? fidele.prenoms : '')}"></span>
+</div>
+
+<div class="line">
+    <span>Date &amp; lieu de naissance :</span>
+    <span class="dots" style="width: 45%;" th:text="${(fidele.dateNaissance != null ? #temporals.format(fidele.dateNaissance, 'dd/MM/yyyy') : '') + ' à ' +
+  (fidele.lieuNaissance != null ? fidele.lieuNaissance : '')}"></span>
+    <span>.Ethnie</span>
+    <span class="dots" style="width: 20%;" th:text="${fidele.ethnie}"></span>
+</div>
+
+<div class="line">
+    <span>Domicile</span>
+    <span class="dots" style="width: 45%;" th:text="${fidele.adresse != null ? fidele.adresse.domicile : ''}"></span>
+    <span>Maison</span>
+    <span class="dots" style="width: 30%;" th:text="${fidele.adresse != null ? fidele.adresse.maison : ''}"></span>
+</div>
+
+<div class="line">
+    <span>Nom &amp; prénom (s) du père</span>
+    <span class="dots" style="width: 70%;" th:text="${fidele.filiation != null ? (fidele.filiation.nomPere + ' ' + fidele.filiation.prenomPere) : ''}"></span>
+</div>
+
+<div class="line">
+    <span>Nom &amp; prénom (s) de la mère :</span>
+    <span class="dots" style="width: 70%;" th:text="${fidele.filiation != null ? (fidele.filiation.nomMere + ' ' + fidele.filiation.prenomMere) : ''}"></span>
+</div>
+
+<div class="line">
+    <span>Sexe</span>
+    <span class="dots" style="width: 15%;" th:text="${fidele.sexe}"></span>
+    <span>Situation matrimonial : Célibataire :</span>
+    <span class="dots" style="width: 15%;" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.statutActuel?.name() == 'CELIBATAIRE'
+  ? 'Oui' : ''}"></span>
+    <span>Marié(e)......... Polygame..........</span>
+</div>
+
+<div class="line">
+    <span>Veuve(f)...... Mariage célébré le :</span>
+    <span class="dots" style="width: 15%;" th:text="${fidele.situationMatrimoniale != null and fidele.situationMatrimoniale.dateMariageEglise != null ?
+  #temporals.format(fidele.situationMatrimoniale.dateMariageEglise, 'dd/MM/yyyy') : ''}"></span>
+    <span>à l'Église</span>
+    <span class="dots" style="width: 20%;" th:text="${fidele.situationMatrimoniale != null ? fidele.situationMatrimoniale.egliseMariage : ''}"></span>
+    <span>Par</span>
+    <span class="dots" style="width: 15%;" th:text="${fidele.situationMatrimoniale != null ? fidele.situationMatrimoniale.pasteurCelebrant : ''}"></span>
+</div>
+
+<div class="line">
+    <span>Divorcé (e): avant conversion :...................après conversion................depuis quand ?.................</span>
+</div>
+
+<div class="line">
+            <span>Pourquoi ?..............................................................................................................................................
+  .....................</span>
+</div>
+
+<div class="line">
+    <span>Votre ancien partenaire vit-il (elle) ?...........................................................où ?........................................</span>
+</div>
+
+<div class="line">
+            <span>Remarié (e) le...........................................à Mr (Mme).....................................................................................
+  ......</span>
+</div>
+
+<div class="line">
+            <span>Nom &amp; prénom (s) de l'actuel époux (se).............................................................................................................
+  .....</span>
+</div>
+
+<div class="line">
+            <span>Confession de foi de l'époux (se).......................................................................................................................
+  .....</span>
+</div>
+
+<div class="line">
+    <span>Nombre d'enfants : garçon :</span>
+    <span class="dots" style="width: 8%;" th:text="${fidele.situationMatrimoniale != null ? fidele.situationMatrimoniale.nombreGarçons : ''}"></span>
+    <span>fille............Converti le....................à l'Église..................................................................</span>
+</div>
+
+<div class="line">
+            <span>Préfecture/région........................................Baptisé d'eau le............................à l'Église.....................................
+  </span>
+</div>
+
+<div class="line">
+            <span>par le pasteur...........................................Baptisé du Saint-Esprit le.....................à..............................................
+  </span>
+</div>
+
+<div class="line">
+            <span>Nom de l'ancienne dénomination (Église)................................................................................................................
+  </span>
+</div>
+
+<div class="line">
+            <span>Nom de la nouvelle dénomination (Église)................................................................................................................
+  </span>
+</div>
+
+<div class="line">
+    <span>Avez-vous présentez la lettre de recommandation ?........................quand ?........................................................</span>
+</div>
+
+<div class="line">
+            <span>Signé de quel Pasteur ?.......................................Église....................................................................................
+  ..</span>
+</div>
+
+<div class="line">
+            <span>Activité dans l'Église : ancienne..........................................nouvelle....................................................................
+  </span>
+</div>
+
+<div class="line">
+            <span>Quand avez-vous intégré l'A/D d'adidogomé ?..........................................................................................................
+  </span>
+</div>
+
+<div class="line">
+            <span>Avez-vous votre carte de membres valide ?...............................................................................................................
+  </span>
+</div>
+
+<div class="line">
+            <span>Êtes-vous régulier (ère) à toutes les réunions de l'Église ?............................................................................................
+  </span>
+</div>
+
+<div class="line">
+    <span>Avez-vous votre carnet de dîme valide ?............payez-vous vos dîmes?.......régulièrement........... rarement .........</span>
+</div>
+
+<div class="line">
+            <span>Profession...................................niveau d'étude.............................................................................................
+  .....</span>
+</div>
+
+<div class="line">
+            <span>Contacts : Togocel..............................................Moov...................................................................................
+  </span>
+</div>
+
+<div class="line">
+            <span>E-mail..................................................................................................................................................
+  ......................</span>
+</div>
+</div>
+
+<!-- Pied de page exact -->
+<div class="footer-note">
+    Je certifie sur l'honneur que les renseignements ci-dessus sont exacts. Ci-joint deux (02) photos passeport.
+</div>
+
+<div class="signature-block">
+    <div class="bold">
+        Fait à Lomé, le <span th:text="${dateExport != null ? #temporals.format(dateExport, 'dd/MM/yyyy') : (today != null ? #temporals.format(today, 'dd/MM/yyyy') : '...........20...')}">...........20...</span>
+    </div>
+    <div class="bold" style="margin-top: 10px;">Signature</div>
+    
+    <div class="signature-space"></div>
+    
+    <div class="bold">Nom et Prénoms</div>
+</div>
+<div style="clear: both;"></div>
+
+</body>
+</html>
