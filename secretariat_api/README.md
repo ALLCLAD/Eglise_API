@@ -115,13 +115,44 @@ L'API démarrera par défaut sur l'URL : `http://localhost:8081`
 
 ---
 
-## 📦 Architecture & Librairie Partagée
+## 📦 Architecture & Documentation des Modules
 
-L'application consomme la librairie externe **Package-Mapping** publiée sur JitPack (`com.github.ALLCLAD:Package-Mapping:v1.0.0`).
+L'application consomme la librairie externe **Package-Mapping** publiée sur JitPack (`com.github.ALLCLAD:Package-Mapping:v1.0.0`) pour le modèle de données JPA (`com.eglise.model.*`).
 
-- **Modèle de Données JPA (Librairie)** : `com.eglise.model.*` (`Fidele`, `EngagementMinistere`, `LettreDeRecommandation`, etc.)
-- **Scan des Entités** : Activé dans `SecretariatApiApplication` via `@EntityScan(basePackages = {"com.eglise.secretariat", "com.eglise.model"})`
-- **Application Backend** : `com.eglise.secretariat.*` (Repositories, Services, Controllers REST)
+### 📂 Organisation des Packages Backend (`com.eglise.secretariat.*`)
+
+- **🔐 `auth` (Module Authentification)**
+  - `AuthController` : Endpoints REST pour la connexion (`/login`) et la mise à jour de profil (`/update-profile`).
+  - `AuthService` : Logique métier d'authentification, validation du mot de passe et génération de jetons JWT.
+  - `dto/` : Objets de transfert de données (`LoginRequestDto`, `AuthResponseDto`, `UpdateProfileDto`).
+
+- **👥 `fidele` (Module Gestion des Fidèles)**
+  - `FideleController` : Endpoints REST de recherche, création, modification et gestion des engagements des fidèles.
+  - `FideleService` : Logique métier d'inscription, de mise à jour des fidèles et d'affectation d'engagements.
+  - `FideleRepository` : Interface de persistance JPA supportant `JpaSpecificationExecutor`.
+  - `FideleSpecification` : Construction de critères de filtrage dynamiques multi-paramètres.
+  - `dto/` : Objets de données (`FideleDto`, `EngagementDto`).
+
+- **🛠️ `shared` (Configurations & Sécurité Transverses)**
+  - `config/SecurityConfig` : Chaîne de sécurité Spring Security (Filtre JWT, règles d'accès stateless, désactivation CSRF).
+  - `config/OpenApiConfig` : Configuration OpenAPI 3 / Swagger UI avec support des en-têtes `Bearer JWT`.
+  - `config/CorsConfig` : Autorisations multi-origines pour les applications clientes (React/Mobile).
+  - `security/` : Gestionnaire de jetons JWT (`JwtUtil`) et filtre d'interception des requêtes HTTP (`JwtFilter`).
+  - `exception/` : Gestionnaire d'exceptions global (`GlobalExceptionHandler`) pour un formatage JSON standardisé des erreurs.
+
+---
+
+## 📖 Documentation OpenAPI & Swagger UI
+
+Une fois l'application démarrée (`./mvnw spring-boot:run`), la documentation interactive et le client d'exécution des requêtes sont directement accessibles :
+
+- 🌐 **Swagger UI (Interface de test)** : `http://localhost:8081/swagger-ui/index.html`
+- 📄 **Spécification OpenAPI (JSON)** : `http://localhost:8081/v3/api-docs`
+
+> 🔑 **Authentification dans Swagger UI :**
+> 1. Effectuez d'abord une requête `POST /api/auth/login` avec vos identifiants pour obtenir un jeton JWT.
+> 2. Cliquez sur le bouton vert **Authorize** en haut à droite.
+> 3. Collez le jeton dans le champ `Value` et cliquez sur **Authorize**. Vous pouvez maintenant tester tous les endpoints sécurisés !
 
 ---
 
