@@ -121,23 +121,35 @@ L'application consomme la librairie externe **Package-Mapping** publiée sur Jit
 
 ### 📂 Organisation des Packages Backend (`com.eglise.secretariat.*`)
 
-- **🔐 `auth` (Module Authentification)**
+- **🔐 `auth` (Module Authentification - Module 1)**
   - `AuthController` : Endpoints REST pour la connexion (`/login`) et la mise à jour de profil (`/update-profile`).
   - `AuthService` : Logique métier d'authentification, validation du mot de passe et génération de jetons JWT.
   - `dto/` : Objets de transfert de données (`LoginRequestDto`, `AuthResponseDto`, `UpdateProfileDto`).
 
-- **👥 `fidele` (Module Gestion des Fidèles)**
+- **👥 `fidele` (Module Gestion des Fidèles - Module 1)**
   - `FideleController` : Endpoints REST de recherche, création, modification et gestion des fidèles.
   - `FideleService` : Logique métier d'inscription, de mise à jour des fidèles et de conversion avec validation stricte par Enums.
   - `FideleRepository` : Interface de persistance JPA supportant `JpaSpecificationExecutor`.
   - `FideleSpecification` : Construction de critères de filtrage dynamiques multi-paramètres.
   - `dto/` : Objets de données (`FideleDto`, `EngagementDto`) typés avec les Enums métier (`Sexe`, `Statut`, `FrequenceDime`).
 
-- **📄 `document` (Module Génération de Documents PDF)**
+- **📄 `document` (Module Génération de Documents PDF - Module 2)**
   - `DocumentController` : Endpoints REST pour le téléchargement et l'exportation des PDF (`/api/documents/fidele/{id}/pdf` et `/api/documents/lettre-recommandation/pdf`).
   - `FidelePdfExporter` : Service de génération du PDF de la **Fiche d'Inscription Individuelle** (rendu Thymeleaf + FlyingSaucer).
   - `LetterExporter` : Service de génération du PDF de la **Lettre de Recommandation Sortante** pour les fidèles en transfert/voyage.
   - `dto/` : Objets de transfert de demande (`LettreRecommandationRequestDto`).
+
+- **🔄 `mouvement` (Module Gestion des Mouvements & Conformité - Module 3)**
+  - `MouvementController` : Endpoints REST pour l'analyse OCR, l'enregistrement automatique des arrivants et le contrôle de conformité administrative.
+  - `MouvementService` : Logique métier pour l'enregistrement automatique des fidèles arrivants et la mise à jour de leur statut de conformité (carte de membre, carnet de dîme).
+  - `OcrService` : Analyse de documents par OCR avec Tesseract (Tess4J) pour extraire automatiquement les métadonnées de la lettre de recommandation (Pasteur signataire, église d'origine, date).
+  - `MouvementRepository` : Enregistrement de l'historique des changements de conformité.
+  - `dto/` : Objets de transfert de données (`ConformiteStatusDto`, `OcrResultDto`).
+
+- **📊 `dashboard` (Module Statistiques - Module 4)**
+  - `DashboardController` : Endpoint d'exposition du tableau de bord (`/api/dashboard/stats`).
+  - `DashboardService` : Logique de calcul des statistiques consolidées (total des inscrits, répartition par quartier, taux de dîmes à jour, flux mensuels chronologiques).
+  - `dto/` : Conteneur des données de statistiques (`DashboardStatsDto`).
 
 - **🛠️ `shared` (Configurations & Sécurité Transverses)**
   - `config/SecurityConfig` : Chaîne de sécurité Spring Security (Filtre JWT, règles d'accès stateless, désactivation CSRF).
